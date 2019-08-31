@@ -1,0 +1,11 @@
+{
+  "name": "jsx-rendering-engine",
+  "version": "0.0.1",
+  "description": "wherein I attempt to make a lightweight server-side rendering enging for TypeScript",
+  "main": "index.ts",
+  "author": "Chris Ronning <christopher.a.ronning@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^3.6.2"
+  }
+}
