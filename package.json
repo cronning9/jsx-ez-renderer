@@ -7,5 +7,12 @@
   "license": "MIT",
   "dependencies": {
     "typescript": "^3.6.2"
+  },
+  "devDependencies": {
+    "shelljs": "^0.8.3"
+  },
+  "scripts": {
+    "build": "yarn clean && npx tsc",
+    "clean": "npx shx rm -rf ./out/** && mkdir out && npx shx touch ./out/.gitkeep"
   }
 }
