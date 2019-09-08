@@ -1,4 +1,4 @@
-import JSXEngine from '../out/index';
+import JSXEngine from '../index';
 
 interface Props {
   text: string;

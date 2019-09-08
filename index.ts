@@ -1,3 +1,7 @@
+interface RunProps {
+  [key: string]: string;
+}
+
 export default class JSXEngine {
   /**
    * The set of compiler steps that will run on input.
@@ -25,8 +29,9 @@ export default class JSXEngine {
    * 
    * @param input
    */
-  public run = (input: string): string => {
-    return input;
+  // TODO: figure out how to type a component identifier
+  public run = (type: string | {}, props: RunProps | null, children: any): string => {
+    return 'test';
   }
 
   public noop = (input: string): string => input;
