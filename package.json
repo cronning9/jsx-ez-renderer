@@ -17,6 +17,6 @@
   "scripts": {
     "build": "yarn clean && npx tsc",
     "clean": "npx shx rm -rf ./out/** && mkdir out && npx shx touch ./out/.gitkeep",
-    "build:test": "yarn build && cd test && yarn build"
+    "test": "jest"
   }
 }
