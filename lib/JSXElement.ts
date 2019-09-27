@@ -1,5 +1,7 @@
 import { RunProps } from '../index';
 
+export type JSXChildren = (JSXElement | null)[];
+
 /**
  * In order to accept nested children as a run parameter,
  * we need to return some container type, rather than just
@@ -11,15 +13,21 @@ import { RunProps } from '../index';
 export default class JSXElement {
   public type: string;
   public props: RunProps | null;
+  public children: JSXChildren;
 
-  constructor(type: string, props: RunProps | null) {
+  constructor(type: string, props: RunProps | null, ...children: JSXChildren) {
     this.type = type;
     this.props = props;
+    this.children = children;
   }
 
   get htmlString(): string {
+    let renderedChildren = !!this.children
+      ? this.children.filter(c => c !== null).map(c => (c as JSXElement).htmlString)
+      : null;
+
     return (
-      `<${this.type}></${this.type}>`
+      `<${this.type}>${renderedChildren}</${this.type}>`
     )
   }
 }
