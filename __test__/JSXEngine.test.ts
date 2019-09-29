@@ -11,7 +11,18 @@ describe('intrinsic elements', () => {
       null,
       JSXEngine.run('canvas', null)
     ).htmlString).toBe(
-      '<div><canvas></canvas>\</div>'
+      '<div><canvas></canvas></div>'
+    );
+  });
+
+  test('outputs an HTML element with two nested sibling elements', () => {
+    expect(JSXEngine.run(
+      'div',
+      null,
+      JSXEngine.run('div', null),
+      JSXEngine.run('div', null)
+    ).htmlString).toBe(
+      '<div><div></div><div></div></div>'
     );
   });
 })

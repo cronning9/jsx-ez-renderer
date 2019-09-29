@@ -22,9 +22,12 @@ export default class JSXElement {
   }
 
   get htmlString(): string {
-    let renderedChildren = !!this.children
-      ? this.children.filter(c => c !== null).map(c => (c as JSXElement).htmlString)
-      : null;
+    let renderedChildren = !!this.children ?
+      this.children
+        .filter(c => c !== null)
+        .map(c => (c as JSXElement).htmlString)
+        .join('') :
+      null;
 
     return (
       `<${this.type}>${renderedChildren}</${this.type}>`
