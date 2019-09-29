@@ -1,12 +1,12 @@
-import { RunProps } from '../index';
+import { RunProps } from "../index";
 
-export type JSXChildren = (JSXElement | null)[];
+export type JSXChildren = [string] | (JSXElement | null)[];
 
 /**
  * In order to accept nested children as a run parameter,
  * we need to return some container type, rather than just
  * a completed HTML string.
- * 
+ *
  * This will contain a variety of data about the input,
  * as well as likely various utility functions.
  */
@@ -22,15 +22,21 @@ export default class JSXElement {
   }
 
   get htmlString(): string {
-    let renderedChildren = !!this.children ?
-      this.children
-        .filter(c => c !== null)
-        .map(c => (c as JSXElement).htmlString)
-        .join('') :
-      null;
+    let renderedChildren: string;
+    if (Array.isArray(this.children) && this.children[0] instanceof JSXElement) {
+      renderedChildren = (this.children as (JSXElement)[])
+        .map((c: JSXElement) => c.htmlString)
+        .join("");
+    } else if (
+      Array.isArray(this.children) &&
+      this.children.length === 1 &&
+      typeof this.children[0] === "string"
+    ) {
+      renderedChildren = this.children[0];
+    } else {
+      renderedChildren = '';
+    }
 
-    return (
-      `<${this.type}>${renderedChildren}</${this.type}>`
-    )
+    return `<${this.type}>${renderedChildren}</${this.type}>`;
   }
 }

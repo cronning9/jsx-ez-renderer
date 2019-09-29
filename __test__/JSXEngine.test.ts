@@ -38,4 +38,16 @@ describe('intrinsic elements', () => {
       '<div><div><div></div></div></div>'
     );
   });
+
+  describe('text content', () => {
+    test('outputs text content for a p', () => {
+      expect(JSXEngine.run(
+        'div',
+        null,
+        JSXEngine.run('p', null, 'Hello, world!')
+      ).htmlString).toBe(
+        '<div><p>Hello, world!</p></div>'
+      );
+    });
+  });
 });
