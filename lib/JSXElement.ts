@@ -26,11 +26,11 @@ export default class JSXElement {
     if (Array.isArray(this.children) && this.children[0] instanceof JSXElement) {
       renderedChildren = (this.children as (JSXElement)[])
         .map((c: JSXElement) => c.htmlString)
-        .join("");
+        .join('');
     } else if (
       Array.isArray(this.children) &&
       this.children.length === 1 &&
-      typeof this.children[0] === "string"
+      typeof this.children[0] === 'string'
     ) {
       renderedChildren = this.children[0];
     } else {
