@@ -26,6 +26,8 @@ interface JSXFactoryRun {
  * This function should output a JSXElement that outputs valid and accurate HTML.
  */
 // TODO: figure out how to type a component identifier
+// so, I need to be able to take the type paramater, match it against IntrinsicAttributes,
+// then 
 const run: JSXFactoryRun = (type: string, props: RunProps | null, ...children: JSXChildren): JSXElement => {
   if (!IntrinsicElements.includes(type)) {
     throw new InvalidElementError(`${type} is not a valid JSX element.`);
