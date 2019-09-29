@@ -25,4 +25,17 @@ describe('intrinsic elements', () => {
       '<div><div></div><div></div></div>'
     );
   });
-})
+
+  test('outputs an HTML element, with a nested child, that has a nested child', () => {
+    expect(JSXEngine.run(
+      'div',
+      null,
+      JSXEngine.run('div',
+        null,
+        JSXEngine.run('div', null)
+      )
+    ).htmlString).toBe(
+      '<div><div><div></div></div></div>'
+    );
+  });
+});
