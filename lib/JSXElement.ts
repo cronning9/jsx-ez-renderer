@@ -24,8 +24,8 @@ export default class JSXElement {
   get htmlString(): string {
     let renderedChildren: string;
     if (Array.isArray(this.children) && this.children[0] instanceof JSXElement) {
-      renderedChildren = (this.children as (JSXElement)[])
-        .map((c: JSXElement) => c.htmlString)
+      renderedChildren = (this.children as JSXElement[])
+        .map(c => c.htmlString)
         .join('');
     } else if (
       Array.isArray(this.children) &&

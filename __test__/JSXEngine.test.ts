@@ -1,4 +1,4 @@
-import JSXEngine from "..";
+import JSXEngine, { InvalidElementError } from "..";
 
 describe('intrinsic elements', () => {
   test('outputs a single div with no content or properties', () => {
@@ -50,4 +50,11 @@ describe('intrinsic elements', () => {
       );
     });
   });
+
+  describe('errors', () => {
+    test('throws for lowercase element not in IntrinsicElements', () => {
+      expect(() => JSXEngine.run('testlol', null))
+        .toThrowError(InvalidElementError);
+    })
+  })
 });

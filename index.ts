@@ -28,7 +28,7 @@ interface JSXFactoryRun {
 // TODO: figure out how to type a component identifier
 const run: JSXFactoryRun = (type: string, props: RunProps | null, ...children: JSXChildren): JSXElement => {
   if (!IntrinsicElements.includes(type)) {
-    throw new Error(`${type} is not a valid JSX element.`);
+    throw new InvalidElementError(`${type} is not a valid JSX element.`);
   }
 
   return new JSXElement(type, props, ...children);
@@ -37,3 +37,5 @@ const run: JSXFactoryRun = (type: string, props: RunProps | null, ...children: J
 export default {
   run,
 }
+
+export class InvalidElementError extends Error { }
