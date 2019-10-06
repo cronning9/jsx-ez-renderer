@@ -23,20 +23,26 @@ export default class JSXElement {
 
   get htmlString(): string {
     let renderedChildren: string;
-    if (Array.isArray(this.children) && this.children[0] instanceof JSXElement) {
+    if (this.childrenAreElements()) {
       renderedChildren = (this.children as JSXElement[])
         .map(c => c.htmlString)
         .join('');
-    } else if (
-      Array.isArray(this.children) &&
-      this.children.length === 1 &&
-      typeof this.children[0] === 'string'
-    ) {
+    } else if (this.childIsString(this.children[0])) {
       renderedChildren = this.children[0];
     } else {
       renderedChildren = '';
     }
 
     return `<${this.type}>${renderedChildren}</${this.type}>`;
+  }
+
+  private childrenAreElements() {
+    return Array.isArray(this.children) && this.children[0] instanceof JSXElement;
+  }
+
+  private childIsString(child: JSXElement | string | null): child is string {
+    return Array.isArray(this.children) &&
+      this.children.length === 1 &&
+      typeof this.children[0] === 'string';
   }
 }

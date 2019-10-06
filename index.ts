@@ -2,20 +2,10 @@ import { IntrinsicElements } from './lib/constants/JSX';
 import JSXElement, { JSXChildren } from './lib/JSXElement';
 
 export interface RunProps {
-  [key: string]: string;
+  [key: string]: string | boolean | number;
 }
 
 interface JSXFactoryRun {
-  /** So, the third element is expecting a potential array of FactoryRun....
-    * the problem is that what we're actually getting in not the function itself,
-    * but the result of it's invocation -- ie, a string.
-    * But we don't actually want to just accept any old string -- We need to be able 
-    * to check for the proper kind of input. 
-    * At a bare minimum, we need to ensure that it's a string that was specifically returned
-    * from a FactoryRun. 
-    * Later, we can start thinking about whether or not we want to check for valid HTML in the string.
-    * That would not be a TypeScript issue, regardless.
-    */
   (type: string, props: RunProps | null, ...children: JSXChildren): JSXElement;
 }
 
@@ -25,13 +15,12 @@ interface JSXFactoryRun {
  * 
  * This function should output a JSXElement that outputs valid and accurate HTML.
  */
-// TODO: figure out how to type a component identifier
-const run: JSXFactoryRun = (type: string, props: RunProps | null, ...children: JSXChildren): JSXElement => {
-  if (!IntrinsicElements.includes(type)) {
-    throw new InvalidElementError(`${type} is not a valid JSX element.`);
+const run: JSXFactoryRun = (identifier: string, props: RunProps | null, ...children: JSXChildren): JSXElement => {
+  if (!IntrinsicElements.includes(identifier)) {
+    throw new InvalidElementError(`${identifier} is not a valid JSX element.`);
   }
 
-  return new JSXElement(type, props, ...children);
+  return new JSXElement(identifier, props, ...children);
 }
 
 export default {
