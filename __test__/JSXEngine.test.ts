@@ -49,6 +49,29 @@ describe('intrinsic elements', () => {
         '<div><p>Hello, world!</p></div>'
       );
     });
+
+    test('outputs text content next to some sibling', () => {
+      expect(JSXEngine.run(
+        'div',
+        null,
+        'Hello, world!',
+        JSXEngine.run('div', null)
+      ).htmlString).toBe(
+        '<div>Hello, world!<div></div></div>'
+      );
+    });
+
+    test('outputs two text siblings with an element in between', () => {
+      expect(JSXEngine.run(
+        'div',
+        null,
+        'Hello, world!',
+        JSXEngine.run('div', null),
+        'Goodbye, world!'
+      ).htmlString).toBe(
+        '<div>Hello, world!<div></div>Goodbye, world!</div>'
+      );
+    })
   });
 
   describe('errors', () => {
