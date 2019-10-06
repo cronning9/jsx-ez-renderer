@@ -71,6 +71,17 @@ describe('intrinsic elements', () => {
       ).htmlString).toBe(
         '<div>Hello, world!<div></div>Goodbye, world!</div>'
       );
+    });
+
+    test('properly outputs the result of expressions', () => {
+      const int = 2;
+      expect(JSXEngine.run(
+        'div',
+        null,
+        int * 2
+      ).htmlString).toBe(
+        '<div>4</div>'
+      )
     })
   });
 
