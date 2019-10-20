@@ -19,7 +19,7 @@ export default class JSXElement {
   get htmlString(): string {
     let renderedChildren: string;
     if (childrenAreElements(this.children)) {
-      renderedChildren = (this.children)
+      renderedChildren = this.children
         .map(c => c.htmlString)
         .join('');
     } else if (childrenContainsStringOutput(this.children)) {
@@ -51,7 +51,8 @@ function childrenAreElements(children: JSXChildren): children is JSXElement[] {
 
 /**
  * Note: non-string values that resolve to string output will count as Strings for our purposes
- * 
+ * TODO: refactor and clarify exactly what we're doing here, and why. Possibly rewrite type definition 
+ * and abstract JSXElement case into some other thing?
  */
 function childrenContainsStringOutput(children: JSXChildren): children is (string | number | boolean | JSXElement)[] {
   for (const child of children) {
