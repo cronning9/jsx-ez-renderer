@@ -10,7 +10,7 @@ export default class JSXElement {
   public props: RunProps | null;
   public children: JSXChildren;
 
-  constructor(type: string, props: RunProps | null, ...children: JSXChildren) {
+  constructor(type: string | JSXElement, props: RunProps | null, ...children: JSXChildren) {
     this.type = type;
     this.props = props;
     this.children = children;

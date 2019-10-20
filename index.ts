@@ -6,7 +6,7 @@ export interface RunProps {
 }
 
 interface JSXFactoryRun {
-  (type: string, props: RunProps | null, ...children: JSXChildren): JSXElement;
+  (identifier: string | JSXElement, props: RunProps | null, ...children: JSXChildren): JSXElement;
 }
 
 /**
@@ -15,12 +15,15 @@ interface JSXFactoryRun {
  * 
  * This function should output a JSXElement that outputs valid and accurate HTML.
  */
-const run: JSXFactoryRun = (identifier: string, props: RunProps | null, ...children: JSXChildren): JSXElement => {
-  if (!IntrinsicElements.includes(identifier)) {
+const run: JSXFactoryRun = (identifier, props, ...children) => {
+  if (identifierIsString(identifier) && !IntrinsicElements.includes(identifier)) {
     throw new InvalidElementError(`${identifier} is not a valid JSX element.`);
   }
-
   return new JSXElement(identifier, props, ...children);
+}
+
+function identifierIsString(identifier: string | JSXElement): identifier is string {
+  return typeof identifier === 'string';
 }
 
 export default {

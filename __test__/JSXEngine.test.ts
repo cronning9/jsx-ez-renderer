@@ -92,3 +92,12 @@ describe('intrinsic elements', () => {
     })
   })
 });
+
+describe('function component identifiers', () => {
+  test('correctly prints single elements with no children', () => {
+    const Div = () => JSXEngine.run("div", null);
+    expect(JSXEngine.run(Div, null).htmlString).toBe('<div></div>');
+  });
+
+
+});
