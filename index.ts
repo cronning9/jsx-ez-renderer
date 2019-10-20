@@ -1,13 +1,15 @@
 import { IntrinsicElements } from './lib/constants/JSX';
 import JSXElement, { JSXChildren } from './lib/JSXElement';
 
-export interface RunProps {
+export interface IntrinsicElementAttributes {
   [key: string]: string | boolean | number;
 }
 
-interface JSXFactoryRun {
-  (identifier: string | JSXElement, props: RunProps | null, ...children: JSXChildren): JSXElement;
+export interface Component<P> {
+  (props: P | undefined): JSXElement
 }
+
+type Identifier<P> = string | Component<P>;
 
 /**
  * When reading JSX input, the properly-configured TypeScript compiler
@@ -15,14 +17,18 @@ interface JSXFactoryRun {
  * 
  * This function should output a JSXElement that outputs valid and accurate HTML.
  */
-const run: JSXFactoryRun = (identifier, props, ...children) => {
+function run<P>(
+  identifier: Identifier<P>,
+  props: IntrinsicElementAttributes | P | null,
+  ...children: JSXChildren
+): JSXElement {
   if (identifierIsString(identifier) && !IntrinsicElements.includes(identifier)) {
     throw new InvalidElementError(`${identifier} is not a valid JSX element.`);
   }
   return new JSXElement(identifier, props, ...children);
 }
 
-function identifierIsString(identifier: string | JSXElement): identifier is string {
+function identifierIsString<P>(identifier: Identifier<P>): identifier is string {
   return typeof identifier === 'string';
 }
 
