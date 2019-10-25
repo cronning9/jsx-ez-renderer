@@ -98,6 +98,4 @@ describe('function component identifiers', () => {
     const Div = () => JSXEngine.run("div", null);
     expect(JSXEngine.run(Div, null).htmlString).toBe('<div></div>');
   });
-
-
 });
