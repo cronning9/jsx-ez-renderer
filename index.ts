@@ -9,11 +9,11 @@ export interface ComponentProps {
   [key: string]: unknown
 }
 
-export interface Component<P> {
+export interface Component<P extends ComponentProps> {
   (props?: P | null): JSXElement
 }
 
-type Identifier = string | /*JSXElement |*/ Component<ComponentProps>;
+type Identifier = string | Component<ComponentProps>;
 
 /**
  * When reading JSX input, the properly-configured TypeScript compiler
@@ -21,9 +21,9 @@ type Identifier = string | /*JSXElement |*/ Component<ComponentProps>;
  * 
  * This function should output a JSXElement that outputs valid and accurate HTML.
  */
-function run<P extends ComponentProps>(
+function run(
   identifier: Identifier,
-  props: IntrinsicElementAttributes | P | null,
+  props: IntrinsicElementAttributes | ComponentProps | null,
   ...children: JSXChildren
 ): JSXElement {
   if (identifierIsString(identifier) && !IntrinsicElements.includes(identifier)) {
@@ -42,10 +42,6 @@ function identifierIsString(identifier: Identifier): identifier is string {
   return typeof identifier === 'string';
 }
 
-// function identifierIsJSXElement(identifier: Identifier): identifier is JSXElement {
-//   return identifier instanceof JSXElement;
-// }
-
 function identifierIsComponent(identifier: Identifier): identifier is Component<ComponentProps> {
   const argsAreCorrect = (id: Component<ComponentProps>) => id.arguments.length === 1 || id.arguments.length === 0;
   if (!(typeof identifier === 'function') || !argsAreCorrect(identifier)) {
@@ -53,11 +49,6 @@ function identifierIsComponent(identifier: Identifier): identifier is Component<
   }
 
   return true;
-}
-
-interface TestProps extends ComponentProps {
-  one: string,
-  two: number
 }
 
 export default {
