@@ -5,11 +5,11 @@ export interface IntrinsicElementAttributes {
   [key: string]: string | boolean | number;
 }
 
-export interface Component<P = any> {
+export interface Component<P> {
   (props: P): JSXElement<P>
 }
 
-type Identifier = string | Component;
+type Identifier<P> = string | Component<P>;
 
 /**
  * When reading JSX input, the properly-configured TypeScript compiler
@@ -17,7 +17,7 @@ type Identifier = string | Component;
  * 
  * This function should return a JSXElement that outputs valid and accurate HTML.
  */
-function run<P extends object>(
+function run<P>(
   identifier: Component<P>,
   props: P | null,
   ...children: JSXChildren
@@ -28,7 +28,7 @@ function run(
   ...children: JSXChildren
 ): JSXElement<IntrinsicElementAttributes>;
 function run<P>(
-  identifier: Identifier,
+  identifier: string | Component<P>,
   props: P | IntrinsicElementAttributes | null,
   ...children: JSXChildren
 ): JSXElement<P | IntrinsicElementAttributes> {
@@ -36,23 +36,23 @@ function run<P>(
   if (!identifierIsString(identifier) && !identifierIsComponent(identifier)) {
     throw new InvalidElementError(`Identifier ${identifier} must be a string or a function component`);
   }
-  if (identifierIsString(identifier) && !IntrinsicElements.includes(identifier)) {
-    throw new InvalidElementError(`${identifier} is not a valid JSX element.`);
-  }
-  if (identifierIsComponent<P>(identifier)) {
-    // TODO: figure out hwo to narrow down to P or IntrinsiceElementAttributes without casting
-    const element = identifier(props as P);
-    return new JSXElement(element, props as P, ...children);
-  }
+  if (identifierIsString(identifier)) {
+    if (!IntrinsicElements.includes(identifier)) {
+      throw new InvalidElementError(`${identifier} is not a valid JSX element.`);
+    }
 
-  return new JSXElement(
-    identifier as string,
-    props as IntrinsicElementAttributes,
-    ...children
-  );
+    return new JSXElement(
+      identifier,
+      props as IntrinsicElementAttributes,
+      ...children
+    );
+  }
+  // TODO: figure out how to narrow down down type of props without casting
+  const element = identifier(props as P);
+  return new JSXElement(element, props as P, ...children);
 }
 
-function identifierIsString(identifier: Identifier): identifier is string {
+function identifierIsString<P>(identifier: string | Component<P>): identifier is string {
   return typeof identifier === 'string';
 }
 
