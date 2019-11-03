@@ -98,4 +98,13 @@ describe('function component identifiers', () => {
     const Div = () => JSXEngine.run("div", null);
     expect(JSXEngine.run(Div, null).htmlString).toBe('<div></div>');
   });
+
+  test('correctly prints single element with props', () => {
+    type Props = { text: string };
+    const DivWithText = ({ text }: Props) => {
+      return JSXEngine.run('div', null,
+        JSXEngine.run('p', null, text));
+    }
+    expect(JSXEngine.run(DivWithText, { text: 'test' })).toBe('<div><p>test</p></div>');
+  })
 });
