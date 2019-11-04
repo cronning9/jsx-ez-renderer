@@ -1,8 +1,8 @@
-import JSXEngine, { InvalidElementError } from "..";
+import JSXEngine, { InvalidElementError } from "../alt";
 
 describe('intrinsic elements', () => {
   test('outputs a single div with no content or properties', () => {
-    expect(JSXEngine.run('div', null, null).htmlString).toBe('<div></div>');
+    expect(JSXEngine.run('div', null).htmlString).toBe('<div></div>');
   });
 
   test('outputs an HTML element with a nested HTML element', () => {
@@ -93,18 +93,18 @@ describe('intrinsic elements', () => {
   })
 });
 
-describe('function component identifiers', () => {
-  test('correctly prints single elements with no children', () => {
-    const Div = () => JSXEngine.run("div", null);
-    expect(JSXEngine.run(Div, null).htmlString).toBe('<div></div>');
-  });
+// describe('function component identifiers', () => {
+//   test('correctly prints single elements with no children', () => {
+//     const Div = () => JSXEngine.run("div", null);
+//     expect(JSXEngine.run(Div, null).htmlString).toBe('<div></div>');
+//   });
 
-  test('correctly prints single element with props', () => {
-    type Props = { text: string };
-    const DivWithText = ({ text }: Props) => {
-      return JSXEngine.run('div', null,
-        JSXEngine.run('p', null, text));
-    }
-    expect(JSXEngine.run(DivWithText, { text: 'test' })).toBe('<div><p>test</p></div>');
-  })
-});
+//   test('correctly prints single element with props', () => {
+//     type Props = { text: string };
+//     const DivWithText = ({ text }: Props) => {
+//       return JSXEngine.run('div', null,
+//         JSXEngine.run('p', null, text));
+//     }
+//     expect(JSXEngine.run(DivWithText, { text: 'test' })).toBe('<div><p>test</p></div>');
+//   })
+// });
