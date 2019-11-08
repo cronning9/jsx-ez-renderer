@@ -51,7 +51,7 @@ function childrenAreElements<P>(children: JSXChildren): children is JSXElement<P
  * TODO: refactor and clarify exactly what we're doing here, and why. Possibly rewrite type definition 
  * and abstract JSXElement case into some other thing?
  */
-function childrenContainsStringOutput(children: JSXChildren): children is (string | number | boolean | JSXElement)[] {
+function childrenContainsStringOutput(children: JSXChildren): children is (string | number | boolean | JSXElement<unknown>)[] {
   for (const child of children) {
     if (typeof child === 'string' || typeof child === 'number' || typeof child === 'boolean') {
       return true;

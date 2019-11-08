@@ -1,3 +1,5 @@
+import { idIsComponent } from ".";
+
 export interface IElement<P extends {}> {
   identifier: string | IElement<P>;
   props: P | null;
@@ -5,11 +7,6 @@ export interface IElement<P extends {}> {
 
   readonly htmlString: string;
 }
-
-type IntrinsicElement = {
-
-}
-
 
 export type ElementChildren<P> = (string | number | boolean | IElement<P> | null)[];
 
@@ -21,8 +18,8 @@ export default class Element<P extends {}> implements IElement<P> {
   public props: P | null;
   public children: ElementChildren<P>;
 
-  constructor(identifier: string | Element<P>, props: P | null, ...children: ElementChildren<P>) {
-    this.identifier = identifier;
+  constructor(identifier: string | (() => Element<P>), props: P | null, ...children: ElementChildren<P>) {
+    this.identifier = idIsComponent(identifier) ? identifier() : identifier;
     this.props = props;
     this.children = children;
   }
