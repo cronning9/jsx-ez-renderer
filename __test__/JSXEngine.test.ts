@@ -93,6 +93,37 @@ describe('intrinsic elements', () => {
   })
 });
 
+describe('passing props to JSX elements', () => {
+  describe('for intrinsic elements', () => {
+    test('single property with string value renders', () => {
+      expect(JSXEngine.run(
+        'div',
+        { id: 'outer_div' },
+      ).htmlString).toBe(
+        '<div id="outer_div"></div>'
+      );
+    });
+
+    test('multiple properties with string values render', () => {
+      expect(JSXEngine.run(
+        'div',
+        { id: 'outer_div', autocapitalize: 'words' },
+      ).htmlString).toBe(
+        '<div id="outer_div" autocapitalize="words"></div>'
+      );
+    });
+
+    test('className prop renders as class attribute', () => {
+      expect(JSXEngine.run(
+        'div',
+        { className: 'test' }
+      ).htmlString).toBe(
+        '<div class="test"></div>'
+      );
+    });
+  });
+});
+
 // describe('function component identifiers', () => {
 //   test('correctly prints single elements with no children', () => {
 //     const Div = () => JSXEngine.run("div", null);

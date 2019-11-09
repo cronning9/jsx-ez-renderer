@@ -4,17 +4,17 @@ import Element, { IElement, ElementChildren } from './Element';
 type Component = () => Element<{}>;
 type Identifier = string | Component;
 
-function run(
+function run<P extends {}>(
   identifier: string | Component,
-  props: null,
-  ...children: ElementChildren<{}>
-): IElement<{}> {
+  props: P | null,
+  ...children: ElementChildren
+): IElement<P> {
   if (idIsString(identifier)) {
     if (!IntrinsicElements.includes(identifier)) {
       throw new InvalidElementError(`${identifier} is not a valid element.`);
     }
 
-    return new Element(identifier, props, ...children);
+    return new Element<P>(identifier, props, ...children);
   }
 
   throw new Error('Components are not currently supported. WIP.')
