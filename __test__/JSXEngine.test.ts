@@ -1,4 +1,5 @@
 import JSXEngine, { InvalidElementError } from "../alt";
+import { JSX } from '../lib/types';
 
 describe('intrinsic elements', () => {
   test('outputs a single div with no content or properties', () => {
@@ -124,18 +125,18 @@ describe('passing props to JSX elements', () => {
   });
 });
 
-// describe('function component identifiers', () => {
-//   test('correctly prints single elements with no children', () => {
-//     const Div = () => JSXEngine.run("div", null);
-//     expect(JSXEngine.run(Div, null).htmlString).toBe('<div></div>');
-//   });
+describe('function component identifiers', () => {
+  test('correctly prints single elements with no children', () => {
+    const Div: JSX.FC = () => JSXEngine.run("div", null);
+    expect(JSXEngine.run(Div, null).htmlString).toBe('<div></div>');
+  });
 
-//   test('correctly prints single element with props', () => {
-//     type Props = { text: string };
-//     const DivWithText = ({ text }: Props) => {
-//       return JSXEngine.run('div', null,
-//         JSXEngine.run('p', null, text));
-//     }
-//     expect(JSXEngine.run(DivWithText, { text: 'test' })).toBe('<div><p>test</p></div>');
-//   })
-// });
+  test('correctly prints single element with props', () => {
+    type Props = { text: string };
+    const DivWithText: JSX.FC<Props> = ({ text }) => {
+      return JSXEngine.run('div', null,
+        JSXEngine.run('p', null, text));
+    }
+    expect(JSXEngine.run(DivWithText, { text: 'test' })).toBe('<div><p>test</p></div>');
+  })
+});
