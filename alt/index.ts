@@ -1,41 +1,41 @@
-import { IntrinsicElements } from '../lib/constants/JSX';
-import DeprecatedElement, { ElementChildren } from './DeprecatedElement';
-import { JSX } from '../lib/types';
+import { Element, HTMLElement, FCElement } from './Element';
+import { FC, ElementChildren } from './types';
+import IntrinsicElements from '../lib/JSX/IntrinsicElements';
+import { IntrinsicElements as HTMLTags } from '../lib/constants/JSX';
 
-type Component = () => DeprecatedElement<{}>;
-type Identifier = string | Component;
-
-// function run(
-//   // TODO: refactor to an enum or keyof interface with all possible tag names
-//   identifier: string,
-//   props?: {} | null,
-//   ...children: ElementChildren
-// );
-
-// TODO: check if both props.children and children are there -- only allow one or the other
-// The props param should be highlighted as the error.
 function run<P extends {}>(
-  identifier: string | JSX.FC<P>,
+  type: keyof IntrinsicElements,
   props?: P | null,
   ...children: ElementChildren
-): DeprecatedElement<P> {
-  if (idIsString(identifier)) {
-    if (!IntrinsicElements.includes(identifier)) {
-      throw new InvalidElementError(`${identifier} is not a valid element.`);
+): HTMLElement<P>;
+function run<P extends {}>(
+  type: FC<P>,
+  props?: P | null,
+  ...children: ElementChildren
+): FCElement<P>;
+function run<P extends {}>(
+  type: keyof IntrinsicElements | FC<P>,
+  props?: P | null,
+  ...children: ElementChildren
+): Element<P> {
+  if (typeIsString(type)) {
+    if (!HTMLTags.includes(type)) {
+      throw new InvalidElementError(`${type} is not a valid element.`);
     }
 
-    return new DeprecatedElement<P>(identifier, props, ...children);
+    return new HTMLElement(type, props, ...children);
+  } else if (typeIsComponent(type)) {
+    return new FCElement(type, props, ...children);
+  } else {
+    throw new InvalidElementError('type must be a string or Function Component');
   }
-
-  const component = props ? identifier(props) : identifier();
-  return new DeprecatedElement(component, props, ...children);
 }
 
-function idIsString<P>(identifier: string | JSX.FC<P>): identifier is string {
+function typeIsString<P>(identifier: string | FC<P>): identifier is string {
   return typeof identifier === 'string';
 }
 
-export function idIsComponent<P>(identifier: string | JSX.FC<P>): identifier is JSX.FC<P> {
+function typeIsComponent<P>(identifier: string | FC<P>): identifier is FC<P> {
   if (typeof identifier === 'function') {
     return true;
   }

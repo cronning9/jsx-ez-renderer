@@ -1,5 +1,5 @@
 import JSXEngine, { InvalidElementError } from "../alt";
-import { JSX } from '../lib/types';
+import { FC } from '../alt/types';
 
 describe('intrinsic elements', () => {
   test('outputs a single div with no content or properties', () => {
@@ -88,6 +88,7 @@ describe('intrinsic elements', () => {
 
   describe('errors', () => {
     test('throws for lowercase element not in IntrinsicElements', () => {
+      // @ts-ignore
       expect(() => JSXEngine.run('testlol', null))
         .toThrowError(InvalidElementError);
     })
@@ -127,13 +128,13 @@ describe('passing props to JSX elements', () => {
 
 describe('function component identifiers', () => {
   test('correctly prints single elements with no children', () => {
-    const Div: JSX.FC = () => JSXEngine.run("div", null);
+    const Div: FC = () => JSXEngine.run("div", null);
     expect(JSXEngine.run(Div, null).htmlString).toBe('<div></div>');
   });
 
   test('correctly prints single element with props', () => {
     type Props = { text: string };
-    const DivWithText: JSX.FC<Props> = ({ text }) => {
+    const DivWithText: FC<Props> = ({ text }) => {
       return JSXEngine.run('div', null,
         JSXEngine.run('p', null, text));
     }
