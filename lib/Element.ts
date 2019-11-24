@@ -1,4 +1,4 @@
-import IntrinsicElements from '../lib/JSX/IntrinsicElements';
+import IntrinsicElements from './JSX/IntrinsicElements';
 import {
   ElementChildren,
   FC,

@@ -1,13 +1,10 @@
-import DeprecatedElement from "../alt/DeprecatedElement";
+import { Element } from './Element';
 
-export namespace JSX {
-  export interface FC<P = {}> {
-    (props?: P): IElement<P>;
-  }
+export type ElementChildren = (string | number | boolean | Element<any> | null)[];
+export type PropsWithChildren<P> = P & { children?: ElementChildren };
+export type PropsWithRequiredChildren<P> = P & { children: ElementChildren };
+export type PropsWithoutChildren<P> = Omit<P, 'children'>;
 
-  export interface PropType {
-    [key: string]: string | number | boolean;
-  }
+export interface FC<P = {}> {
+  (props: PropsWithChildren<P>): Element<P>;
 }
-
-// export type Props<P> = P extends JSX.PropType ? P : null;

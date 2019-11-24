@@ -1,5 +1,5 @@
-import JSXEngine, { InvalidElementError } from "../alt/index";
-import { FC } from '../alt/types';
+import JSXEngine, { InvalidElementError } from "../index";
+import { FC } from '../lib/types';
 
 describe('intrinsic elements', () => {
   test('outputs a single div with no content or properties', () => {

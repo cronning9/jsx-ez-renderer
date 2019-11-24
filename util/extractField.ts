@@ -1,4 +1,4 @@
-import { PropsWithRequiredChildren, ElementChildren } from '../alt/types';
+import { PropsWithRequiredChildren, ElementChildren } from '../lib/types';
 
 export function extractField<T extends {}, K extends keyof T>(
   obj: T,
