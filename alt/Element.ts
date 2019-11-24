@@ -1,5 +1,11 @@
 import IntrinsicElements from '../lib/JSX/IntrinsicElements';
-import { ElementChildren, PropsWithChildren, FC, PropsWithRequiredChildren } from './types';
+import {
+  ElementChildren,
+  FC,
+  PropsWithChildren,
+  PropsWithRequiredChildren,
+  PropsWithoutChildren
+} from './types';
 import { extractChildren } from '../util/extractField';
 
 export interface Element<P = any, T extends string | FC<any> = string | FC<any>> {
@@ -11,7 +17,7 @@ export interface Element<P = any, T extends string | FC<any> = string | FC<any>>
 
 abstract class AbstractElement<P, T> {
   public type: T;
-  public props: Omit<P, 'children'> | null; // that type is a little convoluted...
+  public props: PropsWithoutChildren<P> | null; // that type is a little convoluted...
   public children: ElementChildren | null;
 
   constructor(type: T, props?: PropsWithChildren<P> | null, ...children: ElementChildren) {
@@ -20,36 +26,39 @@ abstract class AbstractElement<P, T> {
       throw new Error('prop `children` must be an array');
     }
 
-    if (children && props && props.children) {
+    if ((children && children.length > 0 && children[0] !== null) && props && props.children) {
       throw new Error('cannot receive both children and props.children');
     }
 
-    if (props) {
-      if (propsHasChildren(props)) {
-        const [propsCopy, c] = extractChildren(props);
-        this.props = propsCopy;
-        this.children = c;
-      } else {
-        this.props = props;
-        this.children = null;
-      }
+    if (!props && (!children || children.length === 1 && children[0] === null)) {
+      this.props = null;
+      this.children = null;
+    }
+
+    if (props && propsHasChildren(props)) {
+      const [propsCopy, c] = extractChildren(props);
+      this.props = propsCopy;
+      this.children = c;
+    } else if (props) {
+      this.props = props;
+      this.children = null;
+    } else {
+      this.props = null;
+      this.children = null;
     }
 
     if (children && children.length > 0 && children[0] !== null) {
-      this.props = null;
       this.children = children;
     }
-
-    throw new Error('Something went wrong.');
   }
 
   get htmlString(): string {
     let renderedChildren: string;
-    if (this.props && this.children && childrenAreElements(this.children)) {
+    if (this.children && childrenAreElements(this.children)) {
       renderedChildren = this.children
         .map(c => c.htmlString)
         .join('');
-    } else if (this.props && this.children && childrenContainsStringOutput(this.children)) {
+    } else if (this.children && childrenContainsStringOutput(this.children)) {
       renderedChildren = '';
       // TODO: refactor to use ternary operator
       for (const child of this.children) {

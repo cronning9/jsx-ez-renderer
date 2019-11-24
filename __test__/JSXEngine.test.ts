@@ -85,14 +85,6 @@ describe('intrinsic elements', () => {
       )
     })
   });
-
-  describe('errors', () => {
-    test('throws for lowercase element not in IntrinsicElements', () => {
-      // @ts-ignore
-      expect(() => JSXEngine.run('testlol', null))
-        .toThrowError(InvalidElementError);
-    })
-  })
 });
 
 describe('passing props to JSX elements', () => {
@@ -123,6 +115,24 @@ describe('passing props to JSX elements', () => {
         '<div class="test"></div>'
       );
     });
+
+    test('passing children as props renders children properly', () => {
+      const props = {
+        className: 'test',
+        children: [
+          JSXEngine.run('div', { className: 'inner_div' }),
+          JSXEngine.run('div', null),
+          'lol pwnd'
+        ]
+      }
+      expect(JSXEngine.run(
+        'div',
+        props,
+        null
+      ).htmlString).toBe(
+        '<div class="test"><div class="inner_div"></div><div></div>lol pwnd</div>'
+      );
+    })
   });
 });
 
@@ -141,3 +151,11 @@ describe('function component identifiers', () => {
     expect(JSXEngine.run(DivWithText, { text: 'test' })).toBe('<div><p>test</p></div>');
   })
 });
+
+describe('errors', () => {
+  test('throws for lowercase element not in IntrinsicElements', () => {
+    // @ts-ignore
+    expect(() => JSXEngine.run('testlol', null))
+      .toThrowError(InvalidElementError);
+  })
+})

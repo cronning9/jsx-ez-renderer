@@ -43,13 +43,9 @@ function typeIsComponent<P>(identifier: string | FC<P>): identifier is FC<P> {
   return false;
 }
 
-const JSXEngine: any = {};
-JSXEngine.run = run;
 
-export default JSXEngine;
-
-// export default {
-//   run,
-// }
+export default {
+  run,
+}
 
 export class InvalidElementError extends Error { }
