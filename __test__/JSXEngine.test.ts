@@ -1,8 +1,9 @@
-import JSXEngine, { InvalidElementError } from "..";
+import JSXEngine, { InvalidElementError } from "../index";
+import { FC } from '../lib/types';
 
 describe('intrinsic elements', () => {
   test('outputs a single div with no content or properties', () => {
-    expect(JSXEngine.run('div', null, null).htmlString).toBe('<div></div>');
+    expect(JSXEngine.run('div', null).htmlString).toBe('<div></div>');
   });
 
   test('outputs an HTML element with a nested HTML element', () => {
@@ -84,18 +85,77 @@ describe('intrinsic elements', () => {
       )
     })
   });
+});
 
-  describe('errors', () => {
-    test('throws for lowercase element not in IntrinsicElements', () => {
-      expect(() => JSXEngine.run('testlol', null))
-        .toThrowError(InvalidElementError);
+describe('passing props to JSX elements', () => {
+  describe('for intrinsic elements', () => {
+    test('single property with string value renders', () => {
+      expect(JSXEngine.run(
+        'div',
+        { id: 'outer_div' },
+      ).htmlString).toBe(
+        '<div id="outer_div"></div>'
+      );
+    });
+
+    test('multiple properties with string values render', () => {
+      expect(JSXEngine.run(
+        'div',
+        { id: 'outer_div', autocapitalize: 'words' },
+      ).htmlString).toBe(
+        '<div id="outer_div" autocapitalize="words"></div>'
+      );
+    });
+
+    test('className prop renders as class attribute', () => {
+      expect(JSXEngine.run(
+        'div',
+        { className: 'test' }
+      ).htmlString).toBe(
+        '<div class="test"></div>'
+      );
+    });
+
+    test('passing children as props renders children properly', () => {
+      const props = {
+        className: 'test',
+        children: [
+          JSXEngine.run('div', { className: 'inner_div' }),
+          JSXEngine.run('div', null),
+          'lol pwnd'
+        ]
+      }
+      expect(JSXEngine.run(
+        'div',
+        props,
+        null
+      ).htmlString).toBe(
+        '<div class="test"><div class="inner_div"></div><div></div>lol pwnd</div>'
+      );
     })
-  })
+  });
 });
 
 describe('function component identifiers', () => {
   test('correctly prints single elements with no children', () => {
-    const Div = () => JSXEngine.run("div", null);
+    const Div: FC = () => JSXEngine.run("div", null);
     expect(JSXEngine.run(Div, null).htmlString).toBe('<div></div>');
   });
+
+  test('correctly prints single element with props', () => {
+    type Props = { text: string };
+    const DivWithText: FC<Props> = ({ text }) => {
+      return JSXEngine.run('div', null,
+        JSXEngine.run('p', null, text));
+    }
+    expect(JSXEngine.run(DivWithText, { text: 'test' })).toBe('<div><p>test</p></div>');
+  })
 });
+
+describe('errors', () => {
+  test('throws for lowercase element not in IntrinsicElements', () => {
+    // @ts-ignore
+    expect(() => JSXEngine.run('testlol', null))
+      .toThrowError(InvalidElementError);
+  })
+})

@@ -1,55 +1,48 @@
-import { IntrinsicElements } from './lib/constants/JSX';
-import JSXElement, { JSXChildren } from './lib/JSXElement';
+import { Element, HTMLElement, FCElement } from './lib/Element';
+import { FC, ElementChildren } from './lib/types';
+import IntrinsicElements from './lib/JSX/IntrinsicElements';
+import { IntrinsicElements as HTMLTags } from './lib/constants/JSX';
 
-export interface IntrinsicElementAttributes {
-  [key: string]: string | boolean | number;
-}
+function run<P extends {}>(
+  type: keyof IntrinsicElements,
+  props?: P | null,
+  ...children: ElementChildren
+): HTMLElement<P>;
+function run<P extends {}>(
+  type: FC<P>,
+  props?: P | null,
+  ...children: ElementChildren
+): FCElement<P>
+function run<P extends {}>(
+  type: keyof IntrinsicElements | FC<P>,
+  props?: P | null,
+  ...children: ElementChildren
+): Element<P> {
+  if (typeIsString(type)) {
+    if (!HTMLTags.includes(type)) {
+      throw new InvalidElementError(`${type} is not a valid element.`);
+    }
 
-export interface ComponentProps {
-  [key: string]: unknown
-}
-
-export interface Component<P extends ComponentProps> {
-  (props?: P | null): JSXElement
-}
-
-type Identifier = string | Component<ComponentProps>;
-
-/**
- * When reading JSX input, the properly-configured TypeScript compiler
- * will output calls to this function, passing JSX arguments to the proper position.
- * 
- * This function should output a JSXElement that outputs valid and accurate HTML.
- */
-function run(
-  identifier: Identifier,
-  props: IntrinsicElementAttributes | ComponentProps | null,
-  ...children: JSXChildren
-): JSXElement {
-  if (identifierIsString(identifier) && !IntrinsicElements.includes(identifier)) {
-    throw new InvalidElementError(`${identifier} is not a valid JSX element.`);
+    return new HTMLElement(type, props, ...children);
+  } else if (typeIsComponent(type)) {
+    return new FCElement(type, props, ...children);
+  } else {
+    throw new InvalidElementError('type must be a string or Function Component');
   }
-
-  if (identifierIsComponent(identifier)) {
-    const element = identifier(props);
-    return new JSXElement(element, props, ...children);
-  }
-
-  return new JSXElement(identifier, props, ...children);
 }
 
-function identifierIsString(identifier: Identifier): identifier is string {
+function typeIsString<P>(identifier: string | FC<P>): identifier is string {
   return typeof identifier === 'string';
 }
 
-function identifierIsComponent(identifier: Identifier): identifier is Component<ComponentProps> {
-  const argsAreCorrect = (id: Component<ComponentProps>) => id.arguments.length === 1 || id.arguments.length === 0;
-  if (!(typeof identifier === 'function') || !argsAreCorrect(identifier)) {
-    return false;
+function typeIsComponent<P>(identifier: string | FC<P>): identifier is FC<P> {
+  if (typeof identifier === 'function') {
+    return true;
   }
 
-  return true;
+  return false;
 }
+
 
 export default {
   run,
