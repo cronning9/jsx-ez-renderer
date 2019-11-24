@@ -1,15 +1,18 @@
 import IntrinsicElements from '../lib/JSX/IntrinsicElements';
-import { ElementChildren, PropsWithChildren, FC } from './types';
+import { ElementChildren, PropsWithChildren, FC, PropsWithRequiredChildren } from './types';
+import { extractChildren } from '../util/extractField';
 
 export interface Element<P = any, T extends string | FC<any> = string | FC<any>> {
   type: T;
-  props: P | null;
+  props: Omit<P, 'children'> | null;
+  children: ElementChildren | null;
   htmlString: string;
 }
 
 abstract class AbstractElement<P, T> {
   public type: T;
-  public props: PropsWithChildren<P> | null;
+  public props: Omit<P, 'children'> | null; // that type is a little convoluted...
+  public children: ElementChildren | null;
 
   constructor(type: T, props?: PropsWithChildren<P> | null, ...children: ElementChildren) {
     this.type = type;
@@ -22,22 +25,34 @@ abstract class AbstractElement<P, T> {
     }
 
     if (props) {
-      this.props = props.children ? props : { ...props, children };
-    } else {
-      this.props = null;
+      if (propsHasChildren(props)) {
+        const [propsCopy, c] = extractChildren(props);
+        this.props = propsCopy;
+        this.children = c;
+      } else {
+        this.props = props;
+        this.children = null;
+      }
     }
+
+    if (children && children.length > 0 && children[0] !== null) {
+      this.props = null;
+      this.children = children;
+    }
+
+    throw new Error('Something went wrong.');
   }
 
   get htmlString(): string {
     let renderedChildren: string;
-    if (this.props && this.props.children && childrenAreElements(this.props.children)) {
-      renderedChildren = this.props.children
+    if (this.props && this.children && childrenAreElements(this.children)) {
+      renderedChildren = this.children
         .map(c => c.htmlString)
         .join('');
-    } else if (this.props && this.props.children && childrenContainsStringOutput(this.props.children)) {
+    } else if (this.props && this.children && childrenContainsStringOutput(this.children)) {
       renderedChildren = '';
       // TODO: refactor to use ternary operator
-      for (const child of this.props.children) {
+      for (const child of this.children) {
         if (child instanceof HTMLElement || child instanceof FCElement) {
           renderedChildren += child.htmlString;
         } else {
@@ -93,4 +108,8 @@ function childrenContainsStringOutput(children: ElementChildren): children is (s
   }
 
   return false;
+}
+
+function propsHasChildren<P>(props: PropsWithChildren<P>): props is PropsWithRequiredChildren<P> {
+  return !!props.children && props.children.length > 0;
 }

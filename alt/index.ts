@@ -12,7 +12,7 @@ function run<P extends {}>(
   type: FC<P>,
   props?: P | null,
   ...children: ElementChildren
-): FCElement<P>;
+): FCElement<P>
 function run<P extends {}>(
   type: keyof IntrinsicElements | FC<P>,
   props?: P | null,
@@ -43,8 +43,13 @@ function typeIsComponent<P>(identifier: string | FC<P>): identifier is FC<P> {
   return false;
 }
 
-export default {
-  run,
-}
+const JSXEngine: any = {};
+JSXEngine.run = run;
+
+export default JSXEngine;
+
+// export default {
+//   run,
+// }
 
 export class InvalidElementError extends Error { }

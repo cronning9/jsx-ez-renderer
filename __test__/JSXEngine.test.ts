@@ -1,4 +1,4 @@
-import JSXEngine, { InvalidElementError } from "../alt";
+import JSXEngine, { InvalidElementError } from "../alt/index";
 import { FC } from '../alt/types';
 
 describe('intrinsic elements', () => {
